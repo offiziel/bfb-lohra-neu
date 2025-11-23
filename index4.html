@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BfB Lohra - Aus der Mitte der Gesellschaft</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Analytics Platzhalter -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX'); 
+    </script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bfb: {
+                            orange: '#e8801c',
+                            dark: '#1a1a1a',
+                            light: '#fdfbf7',
+                            red: '#c1121c',
+                            green: '#2e7d32'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .ballot-circle {
+            width: 30px; height: 30px;
+            border: 3px solid #333;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 24px; color: #333; background: white;
+        }
+        .paper-texture { background-color: #f9f9f9; background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 20px 20px; }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Das psychologische Hintergrund-Logo */
+        .bg-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vh;
+            background-image: url('images/bfblogotransparent.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.03; /* Sehr subtil im Hintergrund */
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 relative">
+
+    <!-- Subtiles Hintergrund-Logo -->
+    <div class="bg-watermark"></div>
+
+    <div id="root" class="relative z-10"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // 1. Navigation
+        const Navbar = () => {
+            const [isOpen, setIsOpen] = useState(false);
+            return (
+                <nav className="bg-white/95 backdrop-blur-sm shadow-md fixed w-full z-50 top-0 border-b-4 border-bfb-orange">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between h-20">
+                            <div className="flex items-center gap-3">
+                                <img src="images/bfblogotransparent.png" alt="BfB Logo" className="h-14 w-auto object-contain" 
+                                     onError={(e) => {e.target.style.display='none';}} />
+                            </div>
+                            <div className="hidden md:flex items-center space-x-6">
+                                {['Aktuelles', 'Team', 'Kalender', 'Kummerkasten'].map((item) => (
+                                    <a key={item} href={`#${item.toLowerCase()}`} className="text-gray-700 hover:text-bfb-orange font-bold uppercase text-sm transition">{item}</a>
+                                ))}
+                                <a href="#mitmachen" className="bg-bfb-orange text-white px-5 py-2 rounded font-bold hover:bg-orange-700 transition shadow">Mitmachen</a>
+                            </div>
+                            <div className="md:hidden flex items-center">
+                                <button onClick={() => setIsOpen(!isOpen)} className="text-gray-700 p-2"><i data-lucide={isOpen ? "x" : "menu"} className="w-8 h-8"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    {isOpen && (
+                        <div className="md:hidden bg-white border-t">
+                            {['Aktuelles', 'Team', 'Kalender', 'Kummerkasten'].map((item) => (
+                                <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setIsOpen(false)} className="block px-4 py-4 text-lg font-bold text-gray-700 border-b border-gray-100">{item}</a>
+                            ))}
+                        </div>
+                    )}
+                </nav>
+            );
+        };
+
+        // 2. Hero Section
+        const Hero = () => {
+            return (
+                <section id="start" className="relative pt-20 h-screen flex items-center justify-center overflow-hidden">
+                    <div className="absolute inset-0 z-0">
+                        <img src="images/hero.jpg" className="w-full h-full object-cover" alt="Kirche Lohra" 
+                             onError={(e) => { e.target.src='https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'; }} />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20"></div>
+                    </div>
+                    
+                    <div className="max-w-5xl mx-auto px-4 relative z-10 text-white text-center animate-fade-in">
+                        <div className="inline-block bg-bfb-orange text-white px-4 py-1 text-xs font-bold uppercase tracking-widest mb-6 rounded shadow-lg">
+                            Stärkste Kraft: 11 Sitze
+                        </div>
+                        <h1 className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-xl">
+                            Lohra <span className="text-bfb-orange">gemeinsam</span><br/> gestalten.
+                        </h1>
+                        <div className="max-w-3xl mx-auto mb-10 text-left bg-black/40 p-6 rounded-lg border-l-4 border-bfb-orange backdrop-blur-sm">
+                            <p className="text-lg md:text-xl text-white leading-relaxed font-medium">
+                                "Wir, das Bündnis für Bürgernähe (BfB), sind eine politische Wählervereinigung aus der Mitte der Gesellschaft – <strong>keine Partei!</strong><br/> 
+                                Bürgernähe ist für uns keine Floskel, sondern unser Leitbild."
+                            </p>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="#aktuelles" className="bg-white text-bfb-dark px-8 py-4 rounded-lg font-bold hover:bg-gray-200 transition flex items-center justify-center gap-2 shadow-xl text-lg">
+                                Aktuelles <i data-lucide="arrow-down" className="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // 3. Aktuelles & SICHERHEIT
+        const NewsAndPoll = () => {
+            const [voted, setVoted] = useState(false);
+            const [showDetails, setShowDetails] = useState(false);
+            
+            const vote = (option) => { setVoted(true); };
+
+            return (
+                <section id="aktuelles" className="py-20 bg-white/80 backdrop-blur-sm">
+                    <div className="max-w-7xl mx-auto px-4">
+                        
+                        <h2 className="text-3xl font-bold text-bfb-dark mb-10 text-center border-b-4 border-bfb-orange inline-block mx-auto pb-2">Was Lohra bewegt</h2>
+
+                        <div className="grid lg:grid-cols-2 gap-12">
+                            
+                            {/* LINKE SPALTE: SICHERHEIT & NEWS */}
+                            <div className="space-y-8">
+                                {/* Alarm Box */}
+                                <div className="bg-red-50 border-l-8 border-bfb-red rounded-r-xl p-8 shadow-lg relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 bg-bfb-red text-white text-xs font-bold px-4 py-1 rounded-bl">Top Thema</div>
+                                    
+                                    <h3 className="text-2xl font-bold text-red-900 mb-4 flex items-center gap-3">
+                                        <span className="bg-white p-2 rounded-full shadow-sm"><i data-lucide="siren" className="w-6 h-6 text-red-600 animate-pulse"></i></span>
+                                        Auto-Einbrüche: Hast du Angst?
+                                    </h3>
+                                    <p className="text-gray-800 mb-6 leading-relaxed font-medium">
+                                        Vor zwei Nächten gab es erneut Vorfälle. Autos wurden aufgebrochen. Viele Bürger fühlen sich unsicher. 
+                                        <strong>Wir schauen nicht weg!</strong>
+                                    </p>
+                                    
+                                    <div className="flex flex-wrap gap-4">
+                                        <button onClick={() => setShowDetails(true)} className="bg-red-700 text-white px-6 py-3 rounded font-bold hover:bg-red-800 transition flex items-center gap-2 shadow">
+                                            <i data-lucide="info" className="w-4 h-4"></i> Mehr Infos & Vorschläge
+                                        </button>
+                                        <a href="#kummerkasten" className="text-red-700 font-bold underline py-3 flex items-center gap-2 hover:text-red-900">
+                                            <i data-lucide="message-circle" className="w-4 h-4"></i> Ich habe etwas gesehen
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {/* Infrastruktur News */}
+                                <article className="flex flex-col sm:flex-row gap-6 group cursor-pointer bg-white border border-gray-200 p-4 rounded-xl hover:shadow-lg transition">
+                                    <div className="w-full sm:w-48 h-32 overflow-hidden rounded-lg flex-shrink-0">
+                                        <img src="images/bgh.jpg" className="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="Infrastruktur" 
+                                             onError={(e) => e.target.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=500&q=60'} />
+                                    </div>
+                                    <div>
+                                        <span className="text-bfb-orange text-xs font-bold uppercase tracking-wider">Infrastruktur</span>
+                                        <h3 className="text-xl font-bold mb-2 text-bfb-dark group-hover:text-bfb-orange transition">Erhalt unserer Ortskerne</h3>
+                                        <p className="text-gray-600 text-sm leading-relaxed">Wir setzen uns für lebendige Ortskerne ein. Infrastruktur erhalten, Leerstand vermeiden und Begegnungsstätten schaffen.</p>
+                                    </div>
+                                </article>
+                            </div>
+
+                            {/* RECHTE SPALTE: UMFRAGE */}
+                            <div>
+                                <div className="bg-bfb-dark text-white rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                                    <div className="absolute -top-10 -right-10 w-48 h-48 bg-bfb-orange rounded-full opacity-20 blur-2xl"></div>
+                                    
+                                    <h3 className="text-3xl font-bold mb-2 text-bfb-orange relative z-10">Deine Stimme zählt!</h3>
+                                    <p className="text-gray-300 mb-8 relative z-10">Du bist uns wichtig. Sag uns deine Meinung.</p>
+                                    
+                                    <p className="font-bold mb-6 text-lg relative z-10">Was ist aktuell dein Top-Wunsch für Lohra?</p>
+
+                                    {!voted ? (
+                                        <div className="space-y-3 relative z-10">
+                                            {[
+                                                "Skatepark für Jugend", 
+                                                "Neues Jugendzentrum", 
+                                                "Schnellbuslinie nach Gießen", 
+                                                "Nacht-Bus nach Marburg",
+                                                "Mehr Sportangebote",
+                                                "Bessere Straßenbeleuchtung"
+                                            ].map((opt, i) => (
+                                                <button key={i} onClick={() => vote(opt)} className="w-full text-left p-4 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 hover:border-bfb-orange transition flex items-center gap-4 group">
+                                                    <div className="w-5 h-5 border-2 border-gray-400 rounded-full group-hover:border-bfb-orange group-hover:bg-bfb-orange transition"></div>
+                                                    <span className="font-medium text-sm">{opt}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-10 animate-fade-in relative z-10">
+                                            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white"><i data-lucide="check" className="w-8 h-8"></i></div>
+                                            <p className="font-bold text-xl">Danke für dein Feedback!</p>
+                                            <p className="text-sm text-gray-400 mt-2">Aktueller Favorit der Nutzer:</p>
+                                            <div className="mt-4 bg-white/10 rounded p-3 text-bfb-orange font-bold text-lg border border-bfb-orange/30">
+                                                Schnellbuslinie (38%)
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-6 pt-4 border-t border-white/10">
+                                                <i data-lucide="video" className="w-3 h-3 inline mr-1"></i> 
+                                                Kampagne "Gesicht 2026": Bald stellen sich unsere Kandidaten im Video vor!
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* POPUP FÜR SICHERHEIT */}
+                    {showDetails && (
+                        <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in" onClick={() => setShowDetails(false)}>
+                            <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden" onClick={e => e.stopPropagation()}>
+                                <div className="bg-red-700 p-6 flex justify-between items-center text-white">
+                                    <h3 className="text-xl font-bold flex items-center gap-2"><i data-lucide="shield-alert"></i> Sicherheit in Lohra</h3>
+                                    <button onClick={() => setShowDetails(false)} className="hover:bg-red-800 p-1 rounded"><i data-lucide="x" className="w-6 h-6"></i></button>
+                                </div>
+                                <div className="p-8">
+                                    <h4 className="text-lg font-bold text-gray-900 mb-2">Die aktuelle Lage</h4>
+                                    <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+                                        Die Vorfälle der letzten Nächte haben gezeigt, dass wir handeln müssen. Wir stehen im Kontakt mit den Behörden.
+                                    </p>
+                                    
+                                    <h4 className="text-lg font-bold text-bfb-orange mb-4">Unsere Vorschläge:</h4>
+                                    <ul className="space-y-3 mb-8">
+                                        <li className="flex items-start gap-3">
+                                            <i data-lucide="check-circle" className="w-5 h-5 text-green-600 mt-1 flex-shrink-0"></i>
+                                            <span className="text-gray-700 text-sm"><strong>Licht:</strong> Sofortige Prüfung defekter Straßenlaternen.</span>
+                                        </li>
+                                        <li className="flex items-start gap-3">
+                                            <i data-lucide="check-circle" className="w-5 h-5 text-green-600 mt-1 flex-shrink-0"></i>
+                                            <span className="text-gray-700 text-sm"><strong>Dialog:</strong> Polizei zur Bürgerversammlung eingeladen.</span>
+                                        </li>
+                                        <li className="flex items-start gap-3">
+                                            <i data-lucide="check-circle" className="w-5 h-5 text-green-600 mt-1 flex-shrink-0"></i>
+                                            <span className="text-gray-700 text-sm"><strong>Präsenz:</strong> Forderung nach mehr Polizei Streifen.</span>
+                                        </li>
+                                    </ul>
+                                    
+                                    <button onClick={() => setShowDetails(false)} className="w-full bg-gray-100 text-gray-800 py-3 rounded-lg font-bold hover:bg-gray-200 transition border border-gray-300">
+                                        Zurück
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </section>
+            );
+        };
+
+        // 4. Team Grid (INTERAKTIV MIT POPUP)
+        const Team = () => {
+            const [selectedMember, setSelectedMember] = useState(null);
+
+            const teamMembers = [
+                { 
+                    name: "Harald Rink", 
+                    role: "Fraktionsvorsitzender", 
+                    img: "images/harald.jpeg", 
+                    text: "Ich bin Harald Rink, Vorsitzender des BfB. Ich koordiniere die Fraktion und bringe Anträge sowie Anfragen in die Gemeindevertretung ein. Für mich steht der direkte Draht zu den Bürgerinnen und Bürgern im Mittelpunkt. Politik ist kein Selbstzweck, sondern Dienstleistung." 
+                },
+                { 
+                    name: "Franziska Willershausen", 
+                    role: "Gemeindevertretung", 
+                    img: "images/franziska.jpg", 
+                    text: "Ich bin Franziska. Ich bin Mutter und berufstätig. Mir ist wichtig, dass Familien in Lohra eine Stimme haben. Ob Kita-Plätze oder sichere Schulwege – ich setze mich dafür ein, dass Politik alltagstauglich bleibt." 
+                },
+                { 
+                    name: "Christian Kraft", 
+                    role: "Stellv. Fraktionsvorsitzender", 
+                    img: "images/christian.jpg", 
+                    text: "Ich bin Christian. Als Angestellter kenne ich die Sorgen der Arbeitnehmer. Ich sorge dafür, dass unsere Themen im Parlament Gehör finden und setze mich für transparente Entscheidungen ohne Hinterzimmer-Deals ein." 
+                },
+                { 
+                    name: "Niklas Göpel", 
+                    role: "Stellv. Fraktionsvorsitzender", 
+                    img: "images/niklas.jpg", 
+                    text: "Ich bin Niklas. Ich stehe für die junge Generation. Politik muss auch für junge Leute verständlich sein. Ich kämpfe für bessere Freizeitangebote und eine digitale Verwaltung." 
+                },
+                { 
+                    name: "Kathrin Neuser", 
+                    role: "Gemeindevorstand", 
+                    img: "images/kathrin.jpg", 
+                    text: "Ich bin Kathrin. Im Gemeindevorstand arbeite ich direkt an der Umsetzung unserer Beschlüsse. Mir ist wichtig, dass wir nicht nur reden, sondern machen. Ich schaue der Verwaltung auf die Finger." 
+                },
+                { 
+                    name: "Hans Kraft", 
+                    role: "Gemeindevorstand", 
+                    img: "images/hans.jpg", 
+                    text: "Ich bin Hans. Erfahrung zählt – ich setze mich seit Jahren für solide Finanzen ein. Wir dürfen nicht mehr ausgeben, als wir einnehmen. Nachhaltiges Wirtschaften ist mein Ziel." 
+                },
+                { 
+                    name: "Klaus Müller", 
+                    role: "Gemeindevertretung", 
+                    img: "images/klaus.jpg", 
+                    text: "Ich bin Klaus. Als Handwerker packe ich an – nicht nur auf der Baustelle, sondern auch in der Gemeindevertretung. Ich mag keine langen Reden, ich will Ergebnisse sehen, die den Bürgern nutzen." 
+                },
+                { 
+                    name: "Margarete Fiedler", 
+                    role: "Gemeindevertretung", 
+                    img: "images/margarete.jpg", 
+                    text: "Ich bin Margarete. Ich war lange im Schuldienst tätig. Mein Ziel: Lohra weiterentwickeln – mit Herz und Augenmaß. Bildung und Seniorenarbeit sind Themen, die mir besonders am Herzen liegen." 
+                },
+                { 
+                    name: "Markus Schmidt", 
+                    role: "Gemeindevertretung", 
+                    img: "images/markus.jpg", 
+                    text: "Ich bin Markus. Ich setze mich für die Jugend und Vereine ein. Das Ehrenamt ist die Stütze unserer Gemeinde und muss stärker gefördert werden. Dafür mache ich mich stark." 
+                },
+                { 
+                    name: "Michael Witt", 
+                    role: "Gemeindevertretung", 
+                    img: "images/michael.jpg", 
+                    text: "Ich bin Michael. Transparente Politik liegt mir am Herzen. Bürger sollen verstehen, warum Entscheidungen getroffen werden. Ich stehe für offenen Dialog statt Parteibuch-Denken." 
+                }
+            ];
+
+            return (
+                <section id="team" className="py-24 bg-white relative">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <h2 className="text-3xl font-bold text-center mb-4 text-bfb-dark">Unser Team für Lohra</h2>
+                        <p className="text-center text-gray-500 mb-4 text-lg">Die BfB hat aus der Bevölkerung alle Schichten abgedeckt.</p>
+                        <p className="text-center text-xs text-bfb-orange uppercase tracking-wider mb-12 font-bold animate-pulse">Vom Handwerker bis zum Direktor – Klicken Sie auf ein Bild!</p>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                            {teamMembers.map((m, idx) => (
+                                <div key={idx} onClick={() => setSelectedMember(m)} className="bg-gray-50 rounded-xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-2 transition border border-gray-100 flex flex-col items-center text-center cursor-pointer group">
+                                    <div className="w-28 h-28 mb-4 rounded-full overflow-hidden border-4 border-white shadow-md group-hover:border-bfb-orange transition">
+                                        <img src={m.img} alt={m.name} className="w-full h-full object-cover" 
+                                             onError={(e) => e.target.src=`https://ui-avatars.com/api/?name=${m.name}&background=e8801c&color=fff`} />
+                                    </div>
+                                    <h3 className="font-bold text-gray-900 text-lg">{m.name}</h3>
+                                    <p className="text-xs text-bfb-orange font-bold uppercase tracking-wide mt-2">{m.role}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* POPUP FÜR TEAM-DETAILS */}
+                    {selectedMember && (
+                        <div className="fixed inset-0 bg-black/80 z-[70] flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedMember(null)}>
+                            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative text-center" onClick={e => e.stopPropagation()}>
+                                <button onClick={() => setSelectedMember(null)} className="absolute top-4 right-4 hover:bg-gray-100 p-2 rounded-full"><i data-lucide="x"></i></button>
+                                
+                                <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-bfb-orange shadow-lg">
+                                    <img src={selectedMember.img} alt={selectedMember.name} className="w-full h-full object-cover" 
+                                         onError={(e) => e.target.src=`https://ui-avatars.com/api/?name=${selectedMember.name}&background=e8801c&color=fff`} />
+                                </div>
+                                
+                                <h3 className="text-2xl font-bold text-gray-900 mb-1">{selectedMember.name}</h3>
+                                <span className="inline-block bg-bfb-orange text-white text-xs font-bold px-3 py-1 rounded-full mb-6">{selectedMember.role}</span>
+                                
+                                <div className="text-left bg-gray-50 p-5 rounded-xl border border-gray-100">
+                                    <i data-lucide="quote" className="w-8 h-8 text-bfb-orange/20 mb-2"></i>
+                                    <p className="text-gray-700 leading-relaxed italic">
+                                        {selectedMember.text}
+                                    </p>
+                                </div>
+                                
+                                <button onClick={() => setSelectedMember(null)} className="mt-6 text-gray-400 text-sm hover:text-bfb-dark underline">Schließen</button>
+                            </div>
+                        </div>
+                    )}
+                </section>
+            );
+        };
+
+        // 5. Wahlzettel & Kummerkasten
+        const Tools = () => {
+            const [group, setGroup] = useState("Bürger");
+            
+            const events = [
+                { date: "11.12.", year: "2025", title: "Gemeindevertretung", loc: "BGH Lohra", time: "19:00", desc: "Öffentliche Sitzung. Wichtiges Thema: Haushalt 2026 und aktuelle Sicherheitslage." },
+                { date: "15.01.", year: "2026", title: "Neujahrsempfang BfB", loc: "Bürgerhaus", time: "11:00", desc: "Starten Sie mit uns ins neue Jahr. Wir laden ein zu Gesprächen und Snacks!" },
+                { date: "Feb.", year: "2026", title: "Bürgerdialog Sicherheit", loc: "Noch offen", time: "18:30", desc: "Gespräch mit der Polizei zur aktuellen Lage (geplant)." }
+            ];
+            const [activeEvent, setActiveEvent] = useState(null);
+
+            return (
+                <section id="kummerkasten" className="py-20 bg-bfb-dark text-white relative">
+                    <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-16">
+                        
+                        {/* Kalender */}
+                        <div>
+                            <h2 className="text-3xl font-bold mb-6 text-bfb-orange">Termine</h2>
+                            <div className="bg-white text-black p-6 rounded-lg transform -rotate-1 shadow-lg font-mono">
+                                <h3 className="border-b-2 border-black pb-2 mb-4 font-bold uppercase">Stimmzettel 2025/26</h3>
+                                <div className="space-y-4">
+                                    {events.map((evt, idx) => (
+                                        <div key={idx} className="flex items-center gap-4 cursor-pointer hover:bg-gray-100 p-2 rounded transition" onClick={() => setActiveEvent(evt)}>
+                                            <div className="ballot-circle relative"><span className="absolute -mt-2 text-blue-800">×</span></div>
+                                            <div><span className="font-bold">{evt.date}</span> {evt.title} <span className="text-xs text-gray-500 block">{evt.loc}</span></div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-center text-xs text-gray-400 mt-4">Klicken für Details</p>
+                            </div>
+                        </div>
+
+                        {/* Kummerkasten */}
+                        <div>
+                            <div id="mitmachen"></div>
+                            <h2 className="text-3xl font-bold mb-6 text-bfb-orange">Kummerkasten & Kontakt</h2>
+                            <div className="bg-white/10 p-6 rounded-lg border border-white/20">
+                                <p className="mb-4 text-sm font-bold">Gestalte unser Lohra mit! Wir hören zu.</p>
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                    {['Jugend', 'Senior', 'Familie', 'Gewerbe'].map(g => (
+                                        <button key={g} onClick={() => setGroup(g)} className={`px-3 py-1 rounded-full text-xs border transition ${group === g ? 'bg-bfb-orange border-bfb-orange' : 'border-gray-500 hover:bg-white/10'}`}>{g}</button>
+                                    ))}
+                                </div>
+                                <textarea className="w-full bg-black/30 border border-gray-600 rounded p-3 mb-4 text-sm focus:border-bfb-orange outline-none text-white" rows="3" placeholder={`Als ${group} möchte ich sagen...`}></textarea>
+                                <button className="bg-bfb-orange text-white px-6 py-2 rounded font-bold hover:bg-orange-600 w-full transition">Absenden</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {/* Popup Modal für Kalender */}
+                    {activeEvent && (
+                        <div className="fixed inset-0 bg-black/70 z-[80] flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setActiveEvent(null)}>
+                            <div className="bg-white text-black rounded-lg shadow-2xl max-w-md w-full p-6" onClick={e => e.stopPropagation()}>
+                                <div className="flex justify-between mb-4"><h3 className="text-xl font-bold">{activeEvent.title}</h3><button onClick={() => setActiveEvent(null)}><i data-lucide="x"></i></button></div>
+                                <p className="text-bfb-orange font-bold mb-2">{activeEvent.date}{activeEvent.year} | {activeEvent.time}</p>
+                                <p className="text-gray-600 mb-4">{activeEvent.desc}</p>
+                                <button onClick={() => setActiveEvent(null)} className="w-full bg-bfb-dark text-white py-2 rounded font-bold">Schließen</button>
+                            </div>
+                        </div>
+                    )}
+                </section>
+            );
+        };
+
+        // 6. Footer & Newsletter
+        const Footer = () => {
+            return (
+                <footer className="bg-black text-gray-500 py-16 text-sm border-t border-gray-800">
+                    <div className="max-w-4xl mx-auto px-4 text-center">
+                        
+                        {/* Newsletter */}
+                        <div className="mb-12 bg-gray-900 p-8 rounded-2xl border border-gray-800">
+                            <h4 className="text-white font-bold text-xl mb-2">Wir halten dich auf dem Laufenden</h4>
+                            <p className="mb-6 text-gray-500">Wichtige Entscheidungen direkt in dein Postfach. Kein Spam.</p>
+                            <form className="flex gap-2 max-w-md mx-auto" onSubmit={(e) => {e.preventDefault(); alert('Angemeldet!');}}>
+                                <input type="email" placeholder="E-Mail Adresse" className="flex-1 p-3 rounded bg-black border border-gray-700 text-white outline-none focus:border-bfb-orange" />
+                                <button className="bg-bfb-orange text-white px-6 rounded font-bold hover:bg-orange-700">Anmelden</button>
+                            </form>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-8 mb-8">
+                            <div>
+                                <h4 className="text-white font-bold text-lg mb-4">BfB Lohra</h4>
+                                <p>Unabhängig. Sachlich. Engagiert.</p>
+                            </div>
+                            <div>
+                                <h4 className="text-white font-bold text-lg mb-4">Kontakt</h4>
+                                <p>Harald Rink<br/>Friedrich-Walther-Str. 10, 35102 Lohra<br/><a href="mailto:BfB-Lohra@web.de" className="text-bfb-orange hover:underline">BfB-Lohra@web.de</a></p>
+                            </div>
+                            <div>
+                                <h4 className="text-white font-bold text-lg mb-4">Rechtliches</h4>
+                                <ul className="space-y-2">
+                                    <li><a href="#" className="hover:text-white">Impressum</a></li>
+                                    <li><a href="#" className="hover:text-white">Datenschutz</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p>&copy; 2025 BfB Lohra.</p>
+                    </div>
+                </footer>
+            );
+        };
+
+        const App = () => {
+            useEffect(() => { lucide.createIcons(); }, []);
+            return (
+                <div className="font-sans antialiased selection:bg-bfb-orange selection:text-white">
+                    <Navbar /><Hero /><NewsAndPoll /><Team /><Tools /><Footer />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+
