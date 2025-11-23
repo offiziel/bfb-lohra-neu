@@ -94,7 +94,9 @@
 <body class="bg-gray-50 text-gray-800">
 
     <!-- Hintergrund Logo statisch -->
-    <img src="logo.png" class="bg-watermark" alt="" onError={(e) => {e.target.style.display='none'}} />
+    <!-- Wir nutzen images/logo.png, da dies der Standardpfad im Projekt ist -->
+    <img src="images/logo.png" class="bg-watermark" alt="" 
+         onError={(e) => {e.target.src='logo.png'; e.target.onerror=null;}} />
 
     <div id="root" class="relative z-10"></div>
 
@@ -119,8 +121,17 @@
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between h-20">
                             <div className="flex items-center gap-3">
-                                {/* Logo */}
-                                <img src="logo.png" alt="BfB" className="h-12 w-auto object-contain" onError={(e) => e.target.style.display='none'} />
+                                {/* Logo: Hier wieder images/logo.png eingefügt mit Fallback */}
+                                <img 
+                                    src="images/logo.png" 
+                                    alt="BfB" 
+                                    className="h-12 w-auto object-contain" 
+                                    onError={(e) => {
+                                        // Fallback: Falls Bild nicht in images/ liegt, versuche Root-Verzeichnis
+                                        e.target.src='logo.png'; 
+                                        e.target.onerror = null; // Verhindert Endlosschleife
+                                    }} 
+                                />
                                 <div className="font-bold text-2xl leading-none">
                                     <span className="text-bfb-dark block">BfB</span>
                                     <span className="text-bfb-orange block text-sm uppercase tracking-wide">Lohra</span>
@@ -508,6 +519,9 @@
     </script>
 </body>
 </html>
+
+
+
 
 
 
