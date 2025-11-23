@@ -72,7 +72,7 @@
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
-            opacity: 0.03; /* Sehr subtil im Hintergrund */
+            opacity: 0.04; /* Sehr subtil im Hintergrund */
             pointer-events: none;
             z-index: 0;
         }
@@ -96,6 +96,7 @@
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between h-20">
                             <div className="flex items-center gap-3">
+                                {/* Logo im Menü */}
                                 <img src="images/bfblogotransparent.png" alt="BfB Logo" className="h-14 w-auto object-contain" 
                                      onError={(e) => {e.target.style.display='none';}} />
                             </div>
@@ -115,6 +116,7 @@
                             {['Aktuelles', 'Team', 'Kalender', 'Kummerkasten'].map((item) => (
                                 <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setIsOpen(false)} className="block px-4 py-4 text-lg font-bold text-gray-700 border-b border-gray-100">{item}</a>
                             ))}
+                            <a href="#mitmachen" onClick={() => setIsOpen(false)} className="block px-4 py-4 text-lg font-bold text-bfb-orange">Mitmachen!</a>
                         </div>
                     )}
                 </nav>
@@ -138,12 +140,15 @@
                         <h1 className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-xl">
                             Lohra <span className="text-bfb-orange">gemeinsam</span><br/> gestalten.
                         </h1>
+                        
+                        {/* Neuer Info-Text */}
                         <div className="max-w-3xl mx-auto mb-10 text-left bg-black/40 p-6 rounded-lg border-l-4 border-bfb-orange backdrop-blur-sm">
                             <p className="text-lg md:text-xl text-white leading-relaxed font-medium">
                                 "Wir, das Bündnis für Bürgernähe (BfB), sind eine politische Wählervereinigung aus der Mitte der Gesellschaft – <strong>keine Partei!</strong><br/> 
                                 Bürgernähe ist für uns keine Floskel, sondern unser Leitbild."
                             </p>
                         </div>
+
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <a href="#aktuelles" className="bg-white text-bfb-dark px-8 py-4 rounded-lg font-bold hover:bg-gray-200 transition flex items-center justify-center gap-2 shadow-xl text-lg">
                                 Aktuelles <i data-lucide="arrow-down" className="w-5 h-5"></i>
@@ -171,7 +176,7 @@
                             
                             {/* LINKE SPALTE: SICHERHEIT & NEWS */}
                             <div className="space-y-8">
-                                {/* Alarm Box */}
+                                {/* Alarm Box: Einbrüche */}
                                 <div className="bg-red-50 border-l-8 border-bfb-red rounded-r-xl p-8 shadow-lg relative overflow-hidden">
                                     <div className="absolute top-0 right-0 bg-bfb-red text-white text-xs font-bold px-4 py-1 rounded-bl">Top Thema</div>
                                     
@@ -188,9 +193,6 @@
                                         <button onClick={() => setShowDetails(true)} className="bg-red-700 text-white px-6 py-3 rounded font-bold hover:bg-red-800 transition flex items-center gap-2 shadow">
                                             <i data-lucide="info" className="w-4 h-4"></i> Mehr Infos & Vorschläge
                                         </button>
-                                        <a href="#kummerkasten" className="text-red-700 font-bold underline py-3 flex items-center gap-2 hover:text-red-900">
-                                            <i data-lucide="message-circle" className="w-4 h-4"></i> Ich habe etwas gesehen
-                                        </a>
                                     </div>
                                 </div>
 
@@ -201,9 +203,11 @@
                                              onError={(e) => e.target.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=500&q=60'} />
                                     </div>
                                     <div>
-                                        <span className="text-bfb-orange text-xs font-bold uppercase tracking-wider">Infrastruktur</span>
+                                        <span className="text-bfb-orange text-xs font-bold uppercase tracking-wider">Zukunft</span>
                                         <h3 className="text-xl font-bold mb-2 text-bfb-dark group-hover:text-bfb-orange transition">Erhalt unserer Ortskerne</h3>
-                                        <p className="text-gray-600 text-sm leading-relaxed">Wir setzen uns für lebendige Ortskerne ein. Infrastruktur erhalten, Leerstand vermeiden und Begegnungsstätten schaffen.</p>
+                                        <p className="text-gray-600 text-sm leading-relaxed">
+                                            Wir setzen uns aktiv für die Sanierung und den Erhalt unserer Infrastruktur ein. Leerstand vermeiden, Begegnung schaffen.
+                                        </p>
                                     </div>
                                 </article>
                             </div>
@@ -304,7 +308,7 @@
                     name: "Harald Rink", 
                     role: "Fraktionsvorsitzender", 
                     img: "images/harald.jpeg", 
-                    text: "Ich bin Harald Rink, Vorsitzender des BfB. Ich koordiniere die Fraktion und bringe Anträge sowie Anfragen in die Gemeindevertretung ein. Für mich steht der direkte Draht zu den Bürgerinnen und Bürgern im Mittelpunkt. Politik ist kein Selbstzweck, sondern Dienstleistung." 
+                    text: "Ich bin Harald Rink, Vorsitzender des BfB. Ich koordiniere die Fraktion und bringe Anträge sowie Anfragen in die Gemeindevertretung ein. Für mich steht der direkte Draht zu den Bürgerinnen und Bürgern im Mittelpunkt." 
                 },
                 { 
                     name: "Franziska Willershausen", 
@@ -322,13 +326,13 @@
                     name: "Niklas Göpel", 
                     role: "Stellv. Fraktionsvorsitzender", 
                     img: "images/niklas.jpg", 
-                    text: "Ich bin Niklas. Ich stehe für die junge Generation. Politik muss auch für junge Leute verständlich sein. Ich kämpfe für bessere Freizeitangebote und eine digitale Verwaltung." 
+                    text: "Ich bin Niklas. Ich stehe für frischen Wind. Politik muss auch für junge Leute verständlich sein. Ich kämpfe für bessere Freizeitangebote und eine digitale Verwaltung." 
                 },
                 { 
                     name: "Kathrin Neuser", 
                     role: "Gemeindevorstand", 
                     img: "images/kathrin.jpg", 
-                    text: "Ich bin Kathrin. Im Gemeindevorstand arbeite ich direkt an der Umsetzung unserer Beschlüsse. Mir ist wichtig, dass wir nicht nur reden, sondern machen. Ich schaue der Verwaltung auf die Finger." 
+                    text: "Ich bin Kathrin. Im Gemeindevorstand arbeite ich direkt an der Umsetzung unserer Beschlüsse zum Wohle aller. Mir ist wichtig, dass wir nicht nur reden, sondern machen." 
                 },
                 { 
                     name: "Hans Kraft", 
@@ -366,8 +370,8 @@
                 <section id="team" className="py-24 bg-white relative">
                     <div className="max-w-7xl mx-auto px-4">
                         <h2 className="text-3xl font-bold text-center mb-4 text-bfb-dark">Unser Team für Lohra</h2>
-                        <p className="text-center text-gray-500 mb-4 text-lg">Die BfB hat aus der Bevölkerung alle Schichten abgedeckt.</p>
-                        <p className="text-center text-xs text-bfb-orange uppercase tracking-wider mb-12 font-bold animate-pulse">Vom Handwerker bis zum Direktor – Klicken Sie auf ein Bild!</p>
+                        <p className="text-center text-bfb-orange font-bold uppercase tracking-widest mb-2 text-xs animate-pulse">Vom Handwerker bis zum Direktor</p>
+                        <p className="text-center text-gray-500 mb-12 max-w-2xl mx-auto">Die BfB deckt alle Schichten der Bevölkerung ab. Wir stellen uns persönlich vor. (Klick auf ein Bild)</p>
                         
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
                             {teamMembers.map((m, idx) => (
@@ -425,6 +429,7 @@
 
             return (
                 <section id="kummerkasten" className="py-20 bg-bfb-dark text-white relative">
+                    <div id="mitmachen" className="absolute -top-20"></div>
                     <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-16">
                         
                         {/* Kalender */}
@@ -446,7 +451,6 @@
 
                         {/* Kummerkasten */}
                         <div>
-                            <div id="mitmachen"></div>
                             <h2 className="text-3xl font-bold mb-6 text-bfb-orange">Kummerkasten & Kontakt</h2>
                             <div className="bg-white/10 p-6 rounded-lg border border-white/20">
                                 <p className="mb-4 text-sm font-bold">Gestalte unser Lohra mit! Wir hören zu.</p>
